@@ -9,10 +9,6 @@ type Dao struct {
 	neo4jConnection *persistence.Neo4Go
 }
 
-func NewDao() *Dao {
-	return &Dao{neo4jConnection: persistence.NewNeo4Go()}
-}
-
 type Service struct {
 	Id               string    `json:"id"`
 	Description      string    `json:"description"`
@@ -38,4 +34,8 @@ func (dao Dao) Insert(s Service) error {
 	defer dao.neo4jConnection.Close()
 
 	return nil
+}
+
+func NewDao() *Dao {
+	return &Dao{neo4jConnection: persistence.NewNeo4Go()}
 }
