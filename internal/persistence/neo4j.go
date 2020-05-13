@@ -1,44 +1,56 @@
 package persistence
 
 import (
-	"dera-services-api/internal/service"
+	"github.com/caarlos0/env"
 	"github.com/neo4j/neo4j-go-driver/neo4j"
+	"log"
 )
 
 type Config struct {
-	User     string `env:"USER_DATABASE"`
-	Password string `env:"PASSWORD_DATABASE"`
-	Uri      string `env:"URI_DATABASE"`
+	User     string `env:"USER_DATABASE,required"`
+	Password string `env:"PASSWORD_DATABASE,required"`
+	Uri      string `env:"URI_DATABASE,required"`
 }
 
 type Neo4Go struct {
 	config  Config
-	driver  neo4j.Driver
-	session neo4j.Session
-	result  neo4j.Result
+	Session neo4j.Session
 }
 
-func (neo4go Neo4Go) neo4jConnection() (neo4j.Session, error) {
-	sess, err := neo4go.driver.Session(neo4j.AccessModeWrite)
+func neo4jConnection(config Config) (neo4j.Session, error) {
+
+	driver, err := neo4j.NewDriver(config.Uri, neo4j.BasicAuth(config.User, config.Password, ""))
 	if err != nil {
 		return nil, err
 	}
+
+	sess, err := driver.Session(neo4j.AccessModeWrite)
+	if err != nil {
+		return nil, err
+	}
+
 	return sess, nil
 }
 
-func (neo4go Neo4Go) insert(s service.Service) error {
-	_, err := neo4go.session.Run("CREATE (n:Service { id: $id, description: $description, value: $value, date: $date, minSubscriptions: $minSubscriptions, maxSubscriptions: $maxSubscriptions}) RETURN n.id",
-		map[string]interface{}{
-			"Id":               s.Id,
-			"Description":      s.Description,
-			"Value":            s.Value,
-			"Date":             s.Date,
-			"MinSubscriptions": s.MinSubscriptions,
-			"MaxSubscriptions": s.MaxSubscriptions,
-		})
+func (neo4go Neo4Go) Close() error {
+	err := neo4go.Session.Close()
 	if err != nil {
 		return err
 	}
-
 	return nil
+}
+
+func NewNeo4Go() *Neo4Go {
+	var config Config
+	err := env.Parse(&config)
+	if err != nil {
+		log.Fatalf("Error to configure Neo4J cliente. Error : %s", err)
+	}
+
+	sess, err := neo4jConnection(config)
+	if err != nil {
+		log.Fatalf("Error to configure Neo4J cliente. Error : %s", err)
+	}
+
+	return &Neo4Go{config: config, Session: sess}
 }
