@@ -1,7 +1,7 @@
 version: '3'
 services:
   neo4j:
-    image: neo4j:latest
+    image: library/neo4j:3.5.18
     restart: unless-stopped
     ports:
       - 7474:7474
@@ -17,4 +17,4 @@ services:
       - NEO4J_dbms_memory_pagecache_size=1G
       - NEO4J_dbms.memory.heap.initial_size=1G
       - NEO4J_dbms_memory_heap_max__size=1G
-      - NEO4J_AUTH=neo4j/neo4j
+      - NEO4J_AUTH=neo4j/dera

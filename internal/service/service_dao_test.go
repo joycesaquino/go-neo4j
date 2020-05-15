@@ -8,7 +8,7 @@ import (
 
 func beforeInsert() {
 	_ = os.Setenv("USER_DATABASE", "neo4j")
-	_ = os.Setenv("PASSWORD_DATABASE", "neo4j")
+	_ = os.Setenv("PASSWORD_DATABASE", "dera")
 	_ = os.Setenv("URI_DATABASE", "bolt://0.0.0.0:7687")
 }
 
