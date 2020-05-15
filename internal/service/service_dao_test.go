@@ -4,7 +4,6 @@ import (
 	"dera-services-api/internal/persistence"
 	"os"
 	"testing"
-	"time"
 )
 
 func beforeInsert() {
@@ -32,7 +31,7 @@ func TestDao_Insert(t *testing.T) {
 				Id:               "0001",
 				Description:      "Aula de JAVA e Orientação a Objetos",
 				Value:            120.90,
-				Date:             time.Now(),
+				Date:             "time.Now()",
 				MinSubscriptions: 20,
 				MaxSubscriptions: 5,
 			},

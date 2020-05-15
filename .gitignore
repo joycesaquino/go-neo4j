@@ -16,3 +16,4 @@ logs/*
 plugins
 data
 conf
+neo4j-composer

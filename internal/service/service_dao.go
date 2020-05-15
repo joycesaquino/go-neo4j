@@ -2,7 +2,6 @@ package service
 
 import (
 	"dera-services-api/internal/persistence"
-	"time"
 )
 
 type Dao struct {
@@ -10,23 +9,23 @@ type Dao struct {
 }
 
 type Service struct {
-	Id               string    `json:"id"`
-	Description      string    `json:"description"`
-	Value            float64   `json:"value"`
-	Date             time.Time `json:"date"`
-	MinSubscriptions int       `json:"minSubscriptions"`
-	MaxSubscriptions int       `json:"maxSubscriptions"`
+	Id               string  `json:"id"`
+	Description      string  `json:"description"`
+	Value            float64 `json:"value"`
+	Date             string  `json:"date"`
+	MinSubscriptions int     `json:"minSubscriptions"`
+	MaxSubscriptions int     `json:"maxSubscriptions"`
 }
 
 func (dao Dao) Insert(s Service) error {
 	_, err := dao.neo4jConnection.Session.Run("CREATE (n:Service { id: $id, description: $description, value: $value, date: $date, minSubscriptions: $minSubscriptions, maxSubscriptions: $maxSubscriptions}) RETURN n.id",
 		map[string]interface{}{
-			"Id":               s.Id,
-			"Description":      s.Description,
-			"Value":            s.Value,
-			"Date":             s.Date,
-			"MinSubscriptions": s.MinSubscriptions,
-			"MaxSubscriptions": s.MaxSubscriptions,
+			"id":               s.Id,
+			"description":      s.Description,
+			"value":            s.Value,
+			"date":             s.Date,
+			"minSubscriptions": s.MinSubscriptions,
+			"maxSubscriptions": s.MaxSubscriptions,
 		})
 	if err != nil {
 		return err
