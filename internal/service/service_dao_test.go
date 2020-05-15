@@ -9,11 +9,12 @@ import (
 
 func beforeInsert() {
 	_ = os.Setenv("USER_DATABASE", "neo4j")
-	_ = os.Setenv("PASSWORD_DATABASE", "dera")
-	_ = os.Setenv("URI_DATABASE", "bolt://localhost:7687")
+	_ = os.Setenv("PASSWORD_DATABASE", "neo4j")
+	_ = os.Setenv("URI_DATABASE", "bolt://0.0.0.0:7687")
 }
 
 func TestDao_Insert(t *testing.T) {
+	beforeInsert()
 	type fields struct {
 		neo4jConnection *persistence.Neo4Go
 	}

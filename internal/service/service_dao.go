@@ -31,6 +31,7 @@ func (dao Dao) Insert(s Service) error {
 	if err != nil {
 		return err
 	}
+
 	defer dao.neo4jConnection.Close()
 
 	return nil
