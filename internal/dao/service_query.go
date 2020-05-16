@@ -1,4 +1,4 @@
-package query
+package dao
 
 // TODO Fazer um query builder passando somente o objeto
 const InsertServiceWithUserRelation = "CREATE (service:Service { " +
