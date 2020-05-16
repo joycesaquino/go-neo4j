@@ -1,7 +1,12 @@
 package main
 
-import "fmt"
+import (
+	"dera-services-api/internal/service"
+	"github.com/gorilla/mux"
+	"net/http"
+)
 
 func main() {
-	fmt.Print("Hello GO !")
+	router := mux.NewRouter()
+	router.HandleFunc("/service", service.Insert).Methods(http.MethodPost)
 }

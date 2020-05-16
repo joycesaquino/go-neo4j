@@ -1,8 +1,7 @@
-package dao
+package service
 
 import (
 	"dera-services-api/internal/persistence"
-	"dera-services-api/internal/service"
 	"dera-services-api/internal/service/query"
 	"log"
 )
@@ -11,7 +10,7 @@ type Dao struct {
 	neo4jConnection *persistence.Neo4Go
 }
 
-func (dao Dao) Insert(service service.Service, user service.User) error {
+func (dao Dao) Insert(service *Service, user *User) error {
 	result, err := dao.neo4jConnection.
 		Session.
 		Run(query.InsertServiceWithUserRelation,

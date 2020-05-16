@@ -1,4 +1,4 @@
-package dao
+package service
 
 import (
 	"dera-services-api/internal/persistence"
@@ -20,8 +20,8 @@ func TestDao_Insert(t *testing.T) {
 		neo4jConnection *persistence.Neo4Go
 	}
 	type args struct {
-		service Service
-		user    User
+		service *Service
+		user    *User
 	}
 	tests := []struct {
 		name    string
@@ -30,7 +30,7 @@ func TestDao_Insert(t *testing.T) {
 		wantErr bool
 	}{
 		{name: "Insert service object on database", fields: fields{neo4jConnection: persistence.NewNeo4Go()}, args: args{
-			service: Service{
+			service: &Service{
 				Id:               "0002",
 				Description:      "Meditação Guiada Nível Intermediário",
 				Value:            120.90,
@@ -40,7 +40,7 @@ func TestDao_Insert(t *testing.T) {
 				MaxSubscriptions: 5,
 				CreatedAt:        neo4j.LocalDateTimeOf(time.Now()),
 			},
-			user: User{
+			user: &User{
 				Name:  "Joyce Aquino",
 				Email: "joycesaquino@gmail.com",
 			},

@@ -1,6 +1,7 @@
 package service
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/neo4j/neo4j-go-driver/neo4j"
 	"io/ioutil"
@@ -23,14 +24,27 @@ type Service struct {
 	CreatedAt        neo4j.LocalDateTime `json:"createdAt"`
 }
 
-const (
-	BadRequest = "Bad Request 404"
-)
-
 func Insert(w http.ResponseWriter, r *http.Request) {
-	var _ Service
-	_, err := ioutil.ReadAll(r.Body)
+	var s *Service
+	b, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		fmt.Printf("BAD REQUEST 400")
+		fmt.Printf("Bad Request Error : %s", err)
 	}
+	u := &User{
+		Name:  r.Header.Get("User"),
+		Email: r.Header.Get("Email"),
+	}
+
+	err = json.Unmarshal(b, &s)
+	if err != nil {
+		fmt.Printf("Error unmarshaling body to service interface : %s", err)
+		w.WriteHeader(http.StatusUnprocessableEntity)
+	}
+
+	err = NewDao().Insert(s, u)
+	if err != nil {
+		fmt.Printf("Error on create service : %s", err)
+		w.WriteHeader(http.StatusBadRequest)
+	}
+	w.WriteHeader(http.StatusCreated)
 }
