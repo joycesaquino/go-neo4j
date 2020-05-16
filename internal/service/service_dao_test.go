@@ -2,8 +2,10 @@ package service
 
 import (
 	"dera-services-api/internal/persistence"
+	"github.com/neo4j/neo4j-go-driver/neo4j"
 	"os"
 	"testing"
+	"time"
 )
 
 func beforeInsert() {
@@ -28,12 +30,14 @@ func TestDao_Insert(t *testing.T) {
 	}{
 		{name: "Insert service object on database", fields: fields{neo4jConnection: persistence.NewNeo4Go()}, args: args{
 			s: Service{
-				Id:               "0001",
-				Description:      "Aula de JAVA e Orientação a Objetos",
+				Id:               "0002",
+				Description:      "Meditação Guiada Nível Intermediário",
 				Value:            120.90,
-				Date:             "time.Now()",
+				InitialDateTime:  neo4j.LocalDateTimeOf(time.Now()),
+				FinalDateTime:    neo4j.LocalDateTimeOf(time.Now()),
 				MinSubscriptions: 20,
 				MaxSubscriptions: 5,
+				CreatedAt:        neo4j.LocalDateTimeOf(time.Now()),
 			},
 		}, wantErr: false},
 	}

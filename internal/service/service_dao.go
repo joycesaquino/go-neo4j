@@ -2,6 +2,8 @@ package service
 
 import (
 	"dera-services-api/internal/persistence"
+	"github.com/neo4j/neo4j-go-driver/neo4j"
+	"log"
 )
 
 type Dao struct {
@@ -9,29 +11,39 @@ type Dao struct {
 }
 
 type Service struct {
-	Id               string  `json:"id"`
-	Description      string  `json:"description"`
-	Value            float64 `json:"value"`
-	Date             string  `json:"date"`
-	MinSubscriptions int     `json:"minSubscriptions"`
-	MaxSubscriptions int     `json:"maxSubscriptions"`
+	Id               string              `json:"id"`
+	Description      string              `json:"description"`
+	Value            float64             `json:"value"`
+	InitialDateTime  neo4j.LocalDateTime `json:"date"`
+	FinalDateTime    neo4j.LocalDateTime `json:"date"`
+	MinSubscriptions int64               `json:"minSubscriptions"`
+	MaxSubscriptions int64               `json:"maxSubscriptions"`
+	CreatedAt        neo4j.LocalDateTime `json:"createdAt"`
 }
 
 func (dao Dao) Insert(s Service) error {
-	_, err := dao.neo4jConnection.Session.Run("CREATE (n:Service { id: $id, description: $description, value: $value, date: $date, minSubscriptions: $minSubscriptions, maxSubscriptions: $maxSubscriptions}) RETURN n.id",
+	result, err := dao.neo4jConnection.Session.Run("CREATE (n:Service { id: $id, description: $description, value: $value, initialDateTime: $initialDateTime, finalDateTime: $finalDateTime, minSubscriptions: $minSubscriptions, maxSubscriptions: $maxSubscriptions,createdAt: $createdAt}) RETURN n.id, n.description",
 		map[string]interface{}{
 			"id":               s.Id,
 			"description":      s.Description,
 			"value":            s.Value,
-			"date":             s.Date,
+			"initialDateTime":  s.InitialDateTime,
+			"finalDateTime":    s.FinalDateTime,
 			"minSubscriptions": s.MinSubscriptions,
 			"maxSubscriptions": s.MaxSubscriptions,
+			"createdAt":        s.CreatedAt,
 		})
 	if err != nil {
 		return err
 	}
+	for result.Next() {
+		log.Printf("Created Item with Id = '%s' and Description = '%s'\n", result.Record().GetByIndex(0).(string), result.Record().GetByIndex(1).(string))
+	}
 
-	//defer dao.neo4jConnection.Close()
+	if err = result.Err(); err != nil {
+		return err // handle error
+	}
+	defer dao.neo4jConnection.Close()
 
 	return nil
 }
