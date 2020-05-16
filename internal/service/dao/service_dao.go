@@ -50,7 +50,7 @@ func (dao Dao) Insert(service Service, user User) error {
 		return err
 	}
 	for result.Next() {
-		log.Printf("Created Item with Id = '%service' and Description = '%service'\n", result.Record().GetByIndex(0).(string), result.Record().GetByIndex(1).(string))
+		log.Printf("Created Item with Id = '%s' and Description = '%s'\n", result.Record().GetByIndex(0).(string), result.Record().GetByIndex(1).(string))
 	}
 
 	if err = result.Err(); err != nil {
