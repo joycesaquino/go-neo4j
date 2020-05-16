@@ -29,7 +29,7 @@ type Service struct {
 func (dao Dao) Insert(service Service, user User) error {
 	result, err := dao.neo4jConnection.
 		Session.
-		Run(query.InsertServiceQuery,
+		Run(query.InsertServiceWithUserRelation,
 			map[string]interface{}{
 
 				//Service information
