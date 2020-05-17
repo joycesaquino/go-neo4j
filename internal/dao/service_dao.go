@@ -25,6 +25,23 @@ type Service struct {
 	CreatedAt        neo4j.LocalDateTime `json:"createdAt"`
 }
 
+func (dao Dao) FindById(id string) (interface{}, error) {
+
+	result, err := dao.neo4jConnection.Session.Run(FindServiceById, map[string]interface{}{"id": id})
+	if err != nil {
+		log.Printf("Error :%s", err)
+	}
+	for result.Next() {
+		return result.Record().GetByIndex(0), nil
+	}
+	if err != nil {
+		return nil, err
+	}
+	dao.neo4jConnection.Close()
+
+	return nil, err
+}
+
 func (dao Dao) Insert(service *Service, user *User) error {
 	result, err := dao.neo4jConnection.
 		Session.

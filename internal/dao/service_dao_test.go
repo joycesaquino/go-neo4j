@@ -55,3 +55,37 @@ func TestDao_Insert(t *testing.T) {
 		})
 	}
 }
+
+func TestDao_FindById(t *testing.T) {
+	beforeInsert()
+	type fields struct {
+		neo4jConnection *persistence.Neo4Go
+	}
+	type args struct {
+		id string
+	}
+	tests := []struct {
+		name    string
+		fields  fields
+		args    args
+		want    string
+		wantErr bool
+	}{
+		{name: "Finding service by id", fields: fields{neo4jConnection: persistence.NewNeo4Go()}, args: args{"0002"}, wantErr: false},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			dao := Dao{
+				neo4jConnection: tt.fields.neo4jConnection,
+			}
+			got, err := dao.FindById(tt.args.id)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("FindById() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if got != tt.want {
+				t.Errorf("FindById() got = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}

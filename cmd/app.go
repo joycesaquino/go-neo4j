@@ -7,6 +7,6 @@ import (
 )
 
 func main() {
-	router := mux.NewRouter()
+	router := mux.NewRouter().StrictSlash(true)
 	router.HandleFunc("/service", service.NewController().Insert).Methods(http.MethodPost)
 }
