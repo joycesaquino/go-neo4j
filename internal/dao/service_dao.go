@@ -25,19 +25,29 @@ type Service struct {
 	CreatedAt        neo4j.LocalDateTime `json:"createdAt"`
 }
 
-func (dao Dao) FindById(id string) (interface{}, error) {
+func (dao Dao) FindById(id string) (*Service, error) {
 
 	result, err := dao.neo4jConnection.Session.Run(FindServiceById, map[string]interface{}{"id": id})
 	if err != nil {
 		log.Printf("Error :%s", err)
 	}
+
 	for result.Next() {
-		return result.Record().GetByIndex(0), nil
+		returnedMap := result.Record().GetByIndex(0).(neo4j.Node)
+		service := returnedMap.Props()
+		return &Service{
+			Id:               service["id"].(string),
+			Description:      service["description"].(string),
+			Value:            service["value"].(float64),
+			InitialDateTime:  service["initialDateTime"].(neo4j.LocalDateTime),
+			FinalDateTime:    service["finalDateTime"].(neo4j.LocalDateTime),
+			MinSubscriptions: service["minSubscriptions"].(int64),
+			MaxSubscriptions: service["maxSubscriptions"].(int64),
+			CreatedAt:        service["createdAt"].(neo4j.LocalDateTime),
+		}, nil
 	}
-	if err != nil {
-		return nil, err
-	}
-	dao.neo4jConnection.Close()
+
+	_ = dao.neo4jConnection.Close()
 
 	return nil, err
 }
@@ -70,9 +80,10 @@ func (dao Dao) Insert(service *Service, user *User) error {
 	}
 
 	if err = result.Err(); err != nil {
-		return err // handle error
+		return err
 	}
-	defer dao.neo4jConnection.Close()
+
+	_ = dao.neo4jConnection.Close()
 
 	return nil
 }

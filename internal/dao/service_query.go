@@ -1,11 +1,18 @@
 package dao
 
 // TODO Fazer um query builder passando somente o objeto
-const (
-	InsertServiceWithUserRelation = "CREATE (service:Service { " +
-		"id: $id, description: $description, value: $value, initialDateTime: $initialDateTime, finalDateTime: $finalDateTime, minSubscriptions: $minSubscriptions, maxSubscriptions: $maxSubscriptions,createdAt: $createdAt}" +
-		")-[r:PERTENCE]->(user:User {name: $name, email: $email})" +
-		" RETURN service.id, service.description,r"
 
-	FindServiceById = "MATCH (service:Service {id: $id}) RETURN service"
+//Relations
+const (
+	UserProvideService   = "PROVIDE"
+	UserSubscribeService = "SUBSCRIBE"
+)
+
+const (
+	InsertServiceWithUserRelation = "CREATE (n:service { " +
+		"id: $id, description: $description, value: $value, initialDateTime: $initialDateTime, finalDateTime: $finalDateTime, minSubscriptions: $minSubscriptions, maxSubscriptions: $maxSubscriptions,createdAt: $createdAt}" +
+		")-[r:" + UserProvideService + "]->(user:User {name: $name, email: $email})" +
+		" RETURN n.id, n.description,r"
+
+	FindServiceById = "MATCH (n:service {id: $id}) RETURN n"
 )

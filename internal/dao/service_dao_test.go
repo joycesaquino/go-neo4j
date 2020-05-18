@@ -31,14 +31,14 @@ func TestDao_Insert(t *testing.T) {
 	}{
 		{name: "Insert service object on database", fields: fields{neo4jConnection: persistence.NewNeo4Go()}, args: args{
 			service: &Service{
-				Id:               "0002",
-				Description:      "Meditação Guiada Nível Intermediário",
-				Value:            120.90,
-				InitialDateTime:  neo4j.LocalDateTimeOf(time.Now()),
-				FinalDateTime:    neo4j.LocalDateTimeOf(time.Now()),
-				MinSubscriptions: 20,
-				MaxSubscriptions: 5,
-				CreatedAt:        neo4j.LocalDateTimeOf(time.Now()),
+				Id:               "0001",
+				Description:      "Fundamentos de Backend",
+				Value:            180.50,
+				InitialDateTime:  neo4j.LocalDateTimeOf(time.Time{}),
+				FinalDateTime:    neo4j.LocalDateTimeOf(time.Time{}),
+				MinSubscriptions: 100,
+				MaxSubscriptions: 20,
+				CreatedAt:        neo4j.LocalDateTimeOf(time.Time{}),
 			},
 			user: &User{
 				Name:  "Joyce Aquino",
@@ -68,10 +68,19 @@ func TestDao_FindById(t *testing.T) {
 		name    string
 		fields  fields
 		args    args
-		want    string
+		want    *Service
 		wantErr bool
 	}{
-		{name: "Finding service by id", fields: fields{neo4jConnection: persistence.NewNeo4Go()}, args: args{"0002"}, wantErr: false},
+		{name: "Finding service by id", fields: fields{neo4jConnection: persistence.NewNeo4Go()}, args: args{"0001"}, want: &Service{
+			Id:               "0001",
+			Description:      "Fundamentos de Backend",
+			Value:            180.50,
+			InitialDateTime:  neo4j.LocalDateTimeOf(time.Time{}),
+			FinalDateTime:    neo4j.LocalDateTimeOf(time.Time{}),
+			MinSubscriptions: 100,
+			MaxSubscriptions: 20,
+			CreatedAt:        neo4j.LocalDateTimeOf(time.Time{}),
+		}, wantErr: false},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -84,7 +93,10 @@ func TestDao_FindById(t *testing.T) {
 				return
 			}
 			if got != tt.want {
-				t.Errorf("FindById() got = %v, want %v", got, tt.want)
+				if err != nil {
+					t.Errorf("FindById() got = %v, want %v", got, tt.want)
+					return
+				}
 			}
 		})
 	}
