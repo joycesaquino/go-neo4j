@@ -20,8 +20,8 @@ func TestDao_Insert(t *testing.T) {
 		neo4jConnection *persistence.Neo4Go
 	}
 	type args struct {
-		service *Service
-		user    *User
+		service *Class
+		id      string
 	}
 	tests := []struct {
 		name    string
@@ -29,8 +29,8 @@ func TestDao_Insert(t *testing.T) {
 		args    args
 		wantErr bool
 	}{
-		{name: "Insert service object on database", fields: fields{neo4jConnection: persistence.NewNeo4Go()}, args: args{
-			service: &Service{
+		{name: "CreateClass service object on database", fields: fields{neo4jConnection: persistence.NewNeo4Go()}, args: args{
+			service: &Class{
 				Id:               "0001",
 				Description:      "Fundamentos de Backend",
 				Value:            180.50,
@@ -40,17 +40,14 @@ func TestDao_Insert(t *testing.T) {
 				MaxSubscriptions: 20,
 				CreatedAt:        neo4j.LocalDateTimeOf(time.Time{}),
 			},
-			user: &User{
-				Name:  "Joyce Aquino",
-				Email: "joycesaquino@gmail.com",
-			},
+			id: "IDS001",
 		}, wantErr: false},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			dao := NewDao()
-			if err := dao.Insert(tt.args.service, tt.args.user); (err != nil) != tt.wantErr {
-				t.Errorf("Insert() error = %v, wantErr %v", err, tt.wantErr)
+			if err := dao.CreateClass(tt.args.service, tt.args.id); (err != nil) != tt.wantErr {
+				t.Errorf("CreateClass() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
 	}
@@ -68,15 +65,16 @@ func TestDao_FindById(t *testing.T) {
 		name    string
 		fields  fields
 		args    args
-		want    *Service
+		want    *Class
 		wantErr bool
 	}{
-		{name: "Finding service by id", fields: fields{neo4jConnection: persistence.NewNeo4Go()}, args: args{"0001"}, want: &Service{
+		{name: "Finding service by id", fields: fields{neo4jConnection: persistence.NewNeo4Go()}, args: args{"0001"}, want: &Class{
 			Id:               "0001",
 			Description:      "Fundamentos de Backend",
 			Value:            180.50,
 			InitialDateTime:  neo4j.LocalDateTimeOf(time.Time{}),
 			FinalDateTime:    neo4j.LocalDateTimeOf(time.Time{}),
+			Subscriptions:    0,
 			MinSubscriptions: 100,
 			MaxSubscriptions: 20,
 			CreatedAt:        neo4j.LocalDateTimeOf(time.Time{}),
@@ -97,6 +95,47 @@ func TestDao_FindById(t *testing.T) {
 					t.Errorf("FindById() got = %v, want %v", got, tt.want)
 					return
 				}
+			}
+		})
+	}
+}
+
+func TestDao_CreateService(t *testing.T) {
+	beforeInsert()
+	type fields struct {
+		neo4jConnection *persistence.Neo4Go
+	}
+	type args struct {
+		service *Service
+		user    *User
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		args   args
+		//want Service
+		wantErr bool
+	}{
+		{name: "User Create Service", fields: fields{neo4jConnection: persistence.NewNeo4Go()}, args: args{
+			service: &Service{
+				Id:          "IDS001",
+				Description: "Aula de culinária com a Palmirinha e Anna Maria",
+				Value:       80.00,
+				CreatedAt:   neo4j.LocalDateTimeOf(time.Now()),
+			},
+			user: &User{
+				Name:  "Palmirinha Maria",
+				Email: "palmirinha@gmail.com",
+			},
+		}, wantErr: false},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			dao := Dao{
+				neo4jConnection: tt.fields.neo4jConnection,
+			}
+			if err := dao.CreateService(tt.args.service, tt.args.user); (err != nil) != tt.wantErr {
+				t.Errorf("CreateService() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
 	}

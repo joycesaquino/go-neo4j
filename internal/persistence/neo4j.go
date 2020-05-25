@@ -18,13 +18,9 @@ type Neo4Go struct {
 }
 
 func neo4jConnection(config Config) (neo4j.Session, error) {
-	useConsoleLogger := func(level neo4j.LogLevel) func(config *neo4j.Config) {
-		return func(config *neo4j.Config) {
-			config.Log = neo4j.ConsoleLogger(level)
-		}
-	}
 
-	driver, err := neo4j.NewDriver(config.Uri, neo4j.BasicAuth(config.User, config.Password, ""), useConsoleLogger(neo4j.DEBUG))
+	authToken := neo4j.BasicAuth(config.User, config.Password, "")
+	driver, err := neo4j.NewDriver(config.Uri, authToken)
 	if err != nil {
 		return nil, err
 	}

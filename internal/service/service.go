@@ -12,8 +12,12 @@ type Controller struct {
 	dao *dao.Dao
 }
 
+func (c Controller) Create(w http.ResponseWriter, r *http.Request) {
+
+}
+
 func (c Controller) Insert(w http.ResponseWriter, r *http.Request) {
-	var s *dao.Service
+	var s *dao.Class
 	b, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		fmt.Printf("Bad Request Error : %s", err)
@@ -29,7 +33,7 @@ func (c Controller) Insert(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusUnprocessableEntity)
 	}
 
-	err = c.dao.Insert(s, u)
+	err = c.dao.CreateClass(s, u)
 	if err != nil {
 		fmt.Printf("Error on create service : %s", err)
 		w.WriteHeader(http.StatusBadRequest)
