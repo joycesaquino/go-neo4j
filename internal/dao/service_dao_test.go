@@ -14,7 +14,7 @@ func beforeInsert() {
 	_ = os.Setenv("URI_DATABASE", "bolt://0.0.0.0:7687")
 }
 
-func TestDao_Insert(t *testing.T) {
+func TestDao_CreateClass(t *testing.T) {
 	beforeInsert()
 	type fields struct {
 		neo4jConnection *persistence.Neo4Go
@@ -36,6 +36,7 @@ func TestDao_Insert(t *testing.T) {
 				Value:            180.50,
 				InitialDateTime:  neo4j.LocalDateTimeOf(time.Time{}),
 				FinalDateTime:    neo4j.LocalDateTimeOf(time.Time{}),
+				Subscriptions:    0,
 				MinSubscriptions: 100,
 				MaxSubscriptions: 20,
 				CreatedAt:        neo4j.LocalDateTimeOf(time.Time{}),

@@ -10,17 +10,17 @@ const (
 )
 
 const (
-	CreateService = "CREATE (n:service { " +
+	CreateService = "CREATE (service:service { " +
 		"id: $id, description: $description, value: $value,createdAt: $createdAt}" +
 		")-[r:" + provide + "]->(user:User {name: $name, email: $email})" +
-		" RETURN n.id, n.description,r"
+		" RETURN service.id, service.description,r"
 
-	InsertClassWithServiceRelation = "CREATE (n:class { " +
-		"id: $id, description: $description, value: $value, initialDateTime: $initialDateTime, finalDateTime: $finalDateTime, subscriptions: $subscriptions,minSubscriptions: $minSubscriptions, maxSubscriptions: $maxSubscriptions,createdAt: $createdAt}" +
-		")-[r:" + belongs + "]->(n:service {id: $id})" +
-		" RETURN n.id, n.description,r"
+	InsertClassWithServiceRelation = "CREATE (class:class { " +
+		"id: $id, description: $description, value: $value, initialDateTime: $initialDateTime, finalDateTime: $finalDateTime, subscriptions: $subscriptions, minSubscriptions: $minSubscriptions, maxSubscriptions: $maxSubscriptions,createdAt: $createdAt}" +
+		")-[r:" + belongs + "]->(service:service {id: $id})" +
+		" RETURN class.id, class.description,r"
 
-	FindServiceById = "MATCH (n:class {id: $id}) RETURN n"
+	FindServiceById = "MATCH (class:class {id: $id}) RETURN class"
 
-	UserSubscribeService = "MATCH (n:class {id: $id}) SET n. RETURN n"
+	//UserSubscribeService = "MATCH (n:class {id: $id}) SET n. RETURN n"
 )

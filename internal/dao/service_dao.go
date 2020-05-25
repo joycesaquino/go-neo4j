@@ -106,6 +106,7 @@ func (dao Dao) CreateClass(class *Class, id string) error {
 				"value":            class.Value,
 				"initialDateTime":  class.InitialDateTime,
 				"finalDateTime":    class.FinalDateTime,
+				"subscriptions":    class.Subscriptions,
 				"minSubscriptions": class.MinSubscriptions,
 				"maxSubscriptions": class.MaxSubscriptions,
 				"createdAt":        class.CreatedAt,
