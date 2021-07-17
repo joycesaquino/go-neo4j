@@ -3,7 +3,7 @@ package dao
 import (
 	"dera-services-api/internal/database"
 	"dera-services-api/internal/model"
-	"github.com/neo4j/neo4j-go-driver/neo4j"
+	"github.com/neo4j/neo4j-go-driver/v4/neo4j"
 	"log"
 )
 
@@ -20,7 +20,7 @@ func (dao Dao) FindById(id string) (*model.Class, error) {
 
 	for result.Next() {
 		returnedMap := result.Record().GetByIndex(0).(neo4j.Node)
-		service := returnedMap.Props()
+		service := returnedMap.Props
 		return &model.Class{
 			Id:               service["id"].(string),
 			Description:      service["description"].(string),
@@ -34,10 +34,13 @@ func (dao Dao) FindById(id string) (*model.Class, error) {
 		}, nil
 	}
 
-	_ = dao.neo4jConnection.Close()
+	if err = dao.neo4jConnection.Close(); err != nil {
+		return nil, err
+	}
 
 	return nil, err
 }
+
 func (dao Dao) InsertService(service *model.Service, user *model.User) error {
 	result, err := dao.neo4jConnection.
 		Session.
@@ -65,10 +68,11 @@ func (dao Dao) InsertService(service *model.Service, user *model.User) error {
 		return err
 	}
 
-	_ = dao.neo4jConnection.Close()
+	if err = dao.neo4jConnection.Close(); err != nil {
+		return err
+	}
 
 	return nil
-
 }
 
 func (dao Dao) InsertClass(class *model.Class, id string) error {
@@ -102,7 +106,9 @@ func (dao Dao) InsertClass(class *model.Class, id string) error {
 		return err
 	}
 
-	_ = dao.neo4jConnection.Close()
+	if err = dao.neo4jConnection.Close(); err != nil {
+		return err
+	}
 
 	return nil
 }

@@ -23,7 +23,7 @@ func (c Controller) Insert(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Printf("Bad Request Error : %s", err)
 	}
-	u := &dao.User{
+	u := &model.User{
 		Name:  r.Header.Get("User"),
 		Email: r.Header.Get("Email"),
 	}

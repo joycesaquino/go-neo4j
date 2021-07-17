@@ -1,9 +1,9 @@
 package dao
 
 import (
-	"dera-services-api/internal/model"
 	"dera-services-api/internal/database"
-	"github.com/neo4j/neo4j-go-driver/neo4j"
+	"dera-services-api/internal/model"
+	"github.com/neo4j/neo4j-go-driver/v4/neo4j"
 	"os"
 	"testing"
 	"time"
