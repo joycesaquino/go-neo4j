@@ -9,14 +9,13 @@ import (
 	"time"
 )
 
-func beforeInsert() {
+func init() {
 	_ = os.Setenv("USER_DATABASE", "neo4j")
 	_ = os.Setenv("PASSWORD_DATABASE", "dera")
 	_ = os.Setenv("URI_DATABASE", "bolt://0.0.0.0:7687")
 }
 
 func TestDao_CreateClass(t *testing.T) {
-	beforeInsert()
 	type fields struct {
 		neo4jConnection *database.Neo4Go
 	}
@@ -56,7 +55,6 @@ func TestDao_CreateClass(t *testing.T) {
 }
 
 func TestDao_FindById(t *testing.T) {
-	beforeInsert()
 	type fields struct {
 		neo4jConnection *database.Neo4Go
 	}
@@ -103,7 +101,6 @@ func TestDao_FindById(t *testing.T) {
 }
 
 func TestDao_CreateService(t *testing.T) {
-	beforeInsert()
 	type fields struct {
 		neo4jConnection *database.Neo4Go
 	}
