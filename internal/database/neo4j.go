@@ -7,9 +7,10 @@ import (
 )
 
 type Config struct {
-	User     string `env:"USER_DATABASE,required"`
-	Password string `env:"PASSWORD_DATABASE,required"`
-	Uri      string `env:"URI_DATABASE,required"`
+	User         string `env:"USER_DATABASE,required"`
+	Password     string `env:"PASSWORD_DATABASE,required"`
+	Uri          string `env:"URI_DATABASE,required"`
+	DatabaseName string `env:"DATABASE_NAME,required"`
 }
 
 type Neo4Go struct {
@@ -24,11 +25,10 @@ func neo4jConnection(config Config) (neo4j.Session, error) {
 	if err != nil {
 		return nil, err
 	}
-
-	sess, err := driver.Session(neo4j.AccessModeWrite)
-	if err != nil {
-		return nil, err
-	}
+	sess := driver.NewSession(neo4j.SessionConfig{
+		AccessMode:   neo4j.AccessModeWrite,
+		DatabaseName: config.DatabaseName,
+	})
 
 	return sess, nil
 }
