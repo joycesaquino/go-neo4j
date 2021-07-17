@@ -2,6 +2,7 @@ package service
 
 import (
 	"dera-services-api/internal/dao"
+	"dera-services-api/internal/model"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -17,7 +18,7 @@ func (c Controller) Create(w http.ResponseWriter, r *http.Request) {
 }
 
 func (c Controller) Insert(w http.ResponseWriter, r *http.Request) {
-	var s *dao.Class
+	var s *model.Class
 	b, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		fmt.Printf("Bad Request Error : %s", err)
@@ -33,7 +34,7 @@ func (c Controller) Insert(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusUnprocessableEntity)
 	}
 
-	err = c.dao.CreateClass(s, u)
+	err = c.dao.InsertClass(s, u.Name)
 	if err != nil {
 		fmt.Printf("Error on create service : %s", err)
 		w.WriteHeader(http.StatusBadRequest)

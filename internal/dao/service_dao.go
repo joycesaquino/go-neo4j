@@ -1,6 +1,7 @@
 package dao
 
 import (
+	"dera-services-api/internal/model"
 	"dera-services-api/internal/persistence"
 	"github.com/neo4j/neo4j-go-driver/neo4j"
 	"log"
@@ -10,31 +11,7 @@ type Dao struct {
 	neo4jConnection *persistence.Neo4Go
 }
 
-type User struct {
-	Name  string `json:"name"`
-	Email string `json:"email"`
-}
-
-type Service struct {
-	Id          string              `json:"id"`
-	Description string              `json:"description"`
-	Value       float64             `json:"value"`
-	CreatedAt   neo4j.LocalDateTime `json:"createdAt"`
-}
-
-type Class struct {
-	Id               string              `json:"id"`
-	Description      string              `json:"description"`
-	Value            float64             `json:"value"`
-	InitialDateTime  neo4j.LocalDateTime `json:"date"`
-	FinalDateTime    neo4j.LocalDateTime `json:"date"`
-	Subscriptions    int64               `json:"subscriptions"`
-	MinSubscriptions int64               `json:"minSubscriptions"`
-	MaxSubscriptions int64               `json:"maxSubscriptions"`
-	CreatedAt        neo4j.LocalDateTime `json:"createdAt"`
-}
-
-func (dao Dao) FindById(id string) (*Class, error) {
+func (dao Dao) FindById(id string) (*model.Class, error) {
 
 	result, err := dao.neo4jConnection.Session.Run(FindServiceById, map[string]interface{}{"id": id})
 	if err != nil {
@@ -44,7 +21,7 @@ func (dao Dao) FindById(id string) (*Class, error) {
 	for result.Next() {
 		returnedMap := result.Record().GetByIndex(0).(neo4j.Node)
 		service := returnedMap.Props()
-		return &Class{
+		return &model.Class{
 			Id:               service["id"].(string),
 			Description:      service["description"].(string),
 			Value:            service["value"].(float64),
@@ -61,7 +38,7 @@ func (dao Dao) FindById(id string) (*Class, error) {
 
 	return nil, err
 }
-func (dao Dao) CreateService(service *Service, user *User) error {
+func (dao Dao) InsertService(service *model.Service, user *model.User) error {
 	result, err := dao.neo4jConnection.
 		Session.
 		Run(CreateService,
@@ -94,7 +71,7 @@ func (dao Dao) CreateService(service *Service, user *User) error {
 
 }
 
-func (dao Dao) CreateClass(class *Class, id string) error {
+func (dao Dao) InsertClass(class *model.Class, id string) error {
 	result, err := dao.neo4jConnection.
 		Session.
 		Run(InsertClassWithServiceRelation,

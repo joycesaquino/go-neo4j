@@ -1,6 +1,7 @@
 package dao
 
 import (
+	"dera-services-api/internal/model"
 	"dera-services-api/internal/persistence"
 	"github.com/neo4j/neo4j-go-driver/neo4j"
 	"os"
@@ -20,7 +21,7 @@ func TestDao_CreateClass(t *testing.T) {
 		neo4jConnection *persistence.Neo4Go
 	}
 	type args struct {
-		service *Class
+		service *model.Class
 		id      string
 	}
 	tests := []struct {
@@ -30,7 +31,7 @@ func TestDao_CreateClass(t *testing.T) {
 		wantErr bool
 	}{
 		{name: "CreateClass service object on database", fields: fields{neo4jConnection: persistence.NewNeo4Go()}, args: args{
-			service: &Class{
+			service: &model.Class{
 				Id:               "0001",
 				Description:      "Fundamentos de Backend",
 				Value:            180.50,
@@ -47,7 +48,7 @@ func TestDao_CreateClass(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			dao := NewDao()
-			if err := dao.CreateClass(tt.args.service, tt.args.id); (err != nil) != tt.wantErr {
+			if err := dao.InsertClass(tt.args.service, tt.args.id); (err != nil) != tt.wantErr {
 				t.Errorf("CreateClass() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
@@ -66,10 +67,10 @@ func TestDao_FindById(t *testing.T) {
 		name    string
 		fields  fields
 		args    args
-		want    *Class
+		want    *model.Class
 		wantErr bool
 	}{
-		{name: "Finding service by id", fields: fields{neo4jConnection: persistence.NewNeo4Go()}, args: args{"0001"}, want: &Class{
+		{name: "Finding service by id", fields: fields{neo4jConnection: persistence.NewNeo4Go()}, args: args{"0001"}, want: &model.Class{
 			Id:               "0001",
 			Description:      "Fundamentos de Backend",
 			Value:            180.50,
@@ -135,7 +136,7 @@ func TestDao_CreateService(t *testing.T) {
 			dao := Dao{
 				neo4jConnection: tt.fields.neo4jConnection,
 			}
-			if err := dao.CreateService(tt.args.service, tt.args.user); (err != nil) != tt.wantErr {
+			if err := dao.InsertService(tt.args.service, tt.args.user); (err != nil) != tt.wantErr {
 				t.Errorf("CreateService() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
