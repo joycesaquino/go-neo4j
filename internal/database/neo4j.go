@@ -1,4 +1,4 @@
-package persistence
+package database
 
 import (
 	"github.com/caarlos0/env"

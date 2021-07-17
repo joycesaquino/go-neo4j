@@ -2,7 +2,7 @@ package dao
 
 import (
 	"dera-services-api/internal/model"
-	"dera-services-api/internal/persistence"
+	"dera-services-api/internal/database"
 	"github.com/neo4j/neo4j-go-driver/neo4j"
 	"os"
 	"testing"
@@ -18,7 +18,7 @@ func beforeInsert() {
 func TestDao_CreateClass(t *testing.T) {
 	beforeInsert()
 	type fields struct {
-		neo4jConnection *persistence.Neo4Go
+		neo4jConnection *database.Neo4Go
 	}
 	type args struct {
 		service *model.Class
@@ -30,7 +30,7 @@ func TestDao_CreateClass(t *testing.T) {
 		args    args
 		wantErr bool
 	}{
-		{name: "CreateClass service object on database", fields: fields{neo4jConnection: persistence.NewNeo4Go()}, args: args{
+		{name: "CreateClass service object on database", fields: fields{neo4jConnection: database.NewNeo4Go()}, args: args{
 			service: &model.Class{
 				Id:               "0001",
 				Description:      "Fundamentos de Backend",
@@ -58,7 +58,7 @@ func TestDao_CreateClass(t *testing.T) {
 func TestDao_FindById(t *testing.T) {
 	beforeInsert()
 	type fields struct {
-		neo4jConnection *persistence.Neo4Go
+		neo4jConnection *database.Neo4Go
 	}
 	type args struct {
 		id string
@@ -70,7 +70,7 @@ func TestDao_FindById(t *testing.T) {
 		want    *model.Class
 		wantErr bool
 	}{
-		{name: "Finding service by id", fields: fields{neo4jConnection: persistence.NewNeo4Go()}, args: args{"0001"}, want: &model.Class{
+		{name: "Finding service by id", fields: fields{neo4jConnection: database.NewNeo4Go()}, args: args{"0001"}, want: &model.Class{
 			Id:               "0001",
 			Description:      "Fundamentos de Backend",
 			Value:            180.50,
@@ -105,11 +105,11 @@ func TestDao_FindById(t *testing.T) {
 func TestDao_CreateService(t *testing.T) {
 	beforeInsert()
 	type fields struct {
-		neo4jConnection *persistence.Neo4Go
+		neo4jConnection *database.Neo4Go
 	}
 	type args struct {
-		service *Service
-		user    *User
+		service *model.Service
+		user    *model.User
 	}
 	tests := []struct {
 		name   string
@@ -118,14 +118,14 @@ func TestDao_CreateService(t *testing.T) {
 		//want Service
 		wantErr bool
 	}{
-		{name: "User Create Service", fields: fields{neo4jConnection: persistence.NewNeo4Go()}, args: args{
-			service: &Service{
+		{name: "User Create Service", fields: fields{neo4jConnection: database.NewNeo4Go()}, args: args{
+			service: &model.Service{
 				Id:          "IDS001",
 				Description: "Aula de culinária com a Palmirinha e Anna Maria",
 				Value:       80.00,
 				CreatedAt:   neo4j.LocalDateTimeOf(time.Now()),
 			},
-			user: &User{
+			user: &model.User{
 				Name:  "Palmirinha Maria",
 				Email: "palmirinha@gmail.com",
 			},
@@ -137,7 +137,7 @@ func TestDao_CreateService(t *testing.T) {
 				neo4jConnection: tt.fields.neo4jConnection,
 			}
 			if err := dao.InsertService(tt.args.service, tt.args.user); (err != nil) != tt.wantErr {
-				t.Errorf("CreateService() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("InsertService() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
 	}

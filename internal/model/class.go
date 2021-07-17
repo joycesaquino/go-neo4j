@@ -6,8 +6,8 @@ type Class struct {
 	Id               string              `json:"id"`
 	Description      string              `json:"description"`
 	Value            float64             `json:"value"`
-	InitialDateTime  neo4j.LocalDateTime `json:"date"`
-	FinalDateTime    neo4j.LocalDateTime `json:"date"`
+	InitialDateTime  neo4j.LocalDateTime `json:"initialDate"`
+	FinalDateTime    neo4j.LocalDateTime `json:"finalDate"`
 	Subscriptions    int64               `json:"subscriptions"`
 	MinSubscriptions int64               `json:"minSubscriptions"`
 	MaxSubscriptions int64               `json:"maxSubscriptions"`

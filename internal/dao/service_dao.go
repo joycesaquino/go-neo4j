@@ -1,14 +1,14 @@
 package dao
 
 import (
+	"dera-services-api/internal/database"
 	"dera-services-api/internal/model"
-	"dera-services-api/internal/persistence"
 	"github.com/neo4j/neo4j-go-driver/neo4j"
 	"log"
 )
 
 type Dao struct {
-	neo4jConnection *persistence.Neo4Go
+	neo4jConnection *database.Neo4Go
 }
 
 func (dao Dao) FindById(id string) (*model.Class, error) {
@@ -41,7 +41,7 @@ func (dao Dao) FindById(id string) (*model.Class, error) {
 func (dao Dao) InsertService(service *model.Service, user *model.User) error {
 	result, err := dao.neo4jConnection.
 		Session.
-		Run(CreateService,
+		Run(InsertService,
 			map[string]interface{}{
 
 				//Class information
@@ -108,5 +108,5 @@ func (dao Dao) InsertClass(class *model.Class, id string) error {
 }
 
 func NewDao() *Dao {
-	return &Dao{neo4jConnection: persistence.NewNeo4Go()}
+	return &Dao{neo4jConnection: database.NewNeo4Go()}
 }
